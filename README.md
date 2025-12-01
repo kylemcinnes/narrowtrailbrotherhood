@@ -16,19 +16,16 @@ This project exists to glorify God by connecting men with a community that:
 
 ## Technology Stack
 
-- **Next.js 14** - React framework with App Router
+- **Next.js 14** - React framework with App Router (static export)
 - **TypeScript** - Type-safe development
 - **Tailwind CSS** - Utility-first styling
-- **Nodemailer** - Email delivery for contact form
+- **Formspree** - Form submission service for contact form
 
 ## Project Structure
 
 ```
 narrowtrailbrotherhood/
 ├── app/
-│   ├── api/
-│   │   └── contact/
-│   │       └── route.ts          # POST handler for contact form
 │   ├── globals.css                # Global Tailwind styles
 │   ├── layout.tsx                 # Root layout with metadata
 │   └── page.tsx                   # Main landing page
@@ -54,32 +51,30 @@ narrowtrailbrotherhood/
 
 ## Environment Variables
 
-Create a `.env.local` file in the root directory with the following variables:
+### For Local Development
+
+Create a `.env.local` file in the root directory:
 
 ```env
-# SMTP Configuration for email delivery
-SMTP_HOST=your-smtp-host.example.com
-SMTP_PORT=587
-SMTP_USER=your-smtp-username
-SMTP_PASS=your-smtp-password
-
-# Contact email recipient
-CONTACT_TO_EMAIL=kylesmcinnes@gmail.com
+# Formspree Form ID (get this from formspree.io after creating a form)
+NEXT_PUBLIC_FORMSPREE_ID=your-formspree-form-id
 ```
 
-### SMTP Provider Options
+### For Cloudflare Pages
 
-You can use any SMTP provider. Common options include:
-- **Gmail**: Use an App Password (not your regular password)
-- **SendGrid**: Professional email service
-- **Mailgun**: Developer-friendly email API
-- **AWS SES**: Amazon Simple Email Service
+Add the environment variable in your Cloudflare Pages dashboard:
+- Variable name: `NEXT_PUBLIC_FORMSPREE_ID`
+- Value: Your Formspree form ID
 
-For Gmail specifically:
-- `SMTP_HOST=smtp.gmail.com`
-- `SMTP_PORT=587`
-- `SMTP_USER=your-email@gmail.com`
-- `SMTP_PASS=your-app-password` (generate in Google Account settings)
+### Setting Up Formspree
+
+1. Go to [formspree.io](https://formspree.io) and create a free account
+2. Create a new form
+3. Copy your form ID (it will look like `xvgkqyzw` or similar)
+4. Set the form's email recipient to `kylesmcinnes@gmail.com`
+5. Add the form ID to your environment variables
+
+The free tier includes 50 submissions per month, which should be sufficient for most use cases.
 
 ## Getting Started
 
@@ -102,7 +97,7 @@ For Gmail specifically:
    npm install
    ```
 
-3. Create `.env.local` file with your SMTP credentials (see Environment Variables above)
+3. Create `.env.local` file with your Formspree form ID (see Environment Variables above)
 
 4. Run the development server:
    ```bash
@@ -115,14 +110,30 @@ For Gmail specifically:
 
 ```bash
 npm run build
-npm start
 ```
+
+This will create a static export in the `out/` directory that can be hosted on any static hosting service (Cloudflare Pages, Netlify, etc.).
+
+**Note:** This is a static export, so API routes are not available. The contact form uses Formspree for form submissions.
+
+## Deployment to Cloudflare Pages
+
+1. Connect your GitHub repository to Cloudflare Pages
+2. Set the build configuration:
+   - **Build command**: `npm run build`
+   - **Build output directory**: `out`
+   - **Node version**: 18 or higher
+3. Add environment variable:
+   - **Variable name**: `NEXT_PUBLIC_FORMSPREE_ID`
+   - **Value**: Your Formspree form ID
+4. Deploy! Cloudflare Pages will automatically build and deploy on every push to your main branch.
 
 ## Features
 
 - **Single Page Design**: All content on one scrollable page with smooth navigation
 - **Responsive Layout**: Optimized for mobile, tablet, and desktop
-- **Contact Form**: Functional email submission via Next.js API route
+- **Contact Form**: Functional form submission via Formspree
+- **Static Export**: Fully static site that can be hosted anywhere
 - **Smooth Scrolling**: Navigation links smoothly scroll to sections
 - **Modern Design**: Clean, masculine, reverent aesthetic with nature imagery
 - **TypeScript**: Full type safety throughout the codebase

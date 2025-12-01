@@ -66,16 +66,35 @@ export default function ContactSection() {
     setIsSubmitting(true)
     setSubmitStatus({ type: null, message: '' })
 
-    try {
-      const response = await fetch('/api/contact', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      })
+    // Get Formspree form ID from environment variable or use default
+    // In production, set NEXT_PUBLIC_FORMSPREE_ID in Cloudflare Pages environment variables
+    const formspreeId = process.env.NEXT_PUBLIC_FORMSPREE_ID || 'your-form-id-here'
 
-      const data = await response.json()
+    try {
+      // Format data for Formspree
+      const formDataToSend = new FormData()
+      formDataToSend.append('name', formData.name)
+      formDataToSend.append('email', formData.email)
+      if (formData.description) {
+        formDataToSend.append('description', formData.description)
+      }
+      if (formData.journey) {
+        formDataToSend.append('faith_journey', formData.journey)
+      }
+      if (formData.interests.length > 0) {
+        formDataToSend.append('interests', formData.interests.join(', '))
+      }
+      if (formData.message) {
+        formDataToSend.append('message', formData.message)
+      }
+
+      const response = await fetch(`https://formspree.io/f/${formspreeId}`, {
+        method: 'POST',
+        body: formDataToSend,
+        headers: {
+          Accept: 'application/json',
+        },
+      })
 
       if (response.ok) {
         setSubmitStatus({
@@ -92,6 +111,7 @@ export default function ContactSection() {
           message: '',
         })
       } else {
+        const data = await response.json()
         setSubmitStatus({
           type: 'error',
           message: data.error || 'Something went wrong. Please try again.',
