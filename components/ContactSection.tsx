@@ -68,7 +68,7 @@ export default function ContactSection() {
 
     // Get Formspree form ID from environment variable or use default
     // In production, set NEXT_PUBLIC_FORMSPREE_ID in Cloudflare Pages environment variables
-    const formspreeId = process.env.NEXT_PUBLIC_FORMSPREE_ID || 'your-form-id-here'
+    const formspreeId = process.env.NEXT_PUBLIC_FORMSPREE_ID || 'xovgegza'
 
     try {
       // Format data for Formspree
